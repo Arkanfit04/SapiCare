@@ -32,14 +32,59 @@ class SapiRepository @Inject constructor(
         awaitClose { listener.remove() }
     }
 
+    /** Hanya sapi milik peternak tertentu (filter by ownerId) */
+    fun getSapiByOwner(ownerId: String): Flow<List<Sapi>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("ownerId", ownerId)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) { close(error); return@addSnapshotListener }
+                val list = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Sapi::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(list)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    /** Sapi per wilayah (untuk peternak lihat sapi di wilayahnya) */
+    fun getSapiByWilayah(wilayah: String): Flow<List<Sapi>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("wilayah", wilayah)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) { close(error); return@addSnapshotListener }
+                val list = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Sapi::class.java)?.copy(id = doc.id)
+                } ?: emptyList()
+                trySend(list)
+            }
+        awaitClose { listener.remove() }
+    }
+
     fun searchSapi(query: String): Flow<List<Sapi>> = callbackFlow {
         val listener = collection
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
-                    return@addSnapshotListener
-                }
+                    close(error); return@addSnapshotListener }
+                val list = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(Sapi::class.java)?.copy(id = doc.id)
+                }?.filter { sapi ->
+                    sapi.nama.contains(query, ignoreCase = true) ||
+                            sapi.wilayah.contains(query, ignoreCase = true)
+                } ?: emptyList()
+                trySend(list)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    fun searchSapiByOwner(ownerId: String, query: String): Flow<List<Sapi>> = callbackFlow {
+        val listener = collection
+            .whereEqualTo("ownerId", ownerId)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) { close(error); return@addSnapshotListener }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Sapi::class.java)?.copy(id = doc.id)
                 }?.filter { sapi ->
