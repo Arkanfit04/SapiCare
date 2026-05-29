@@ -10,6 +10,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,22 +40,12 @@ class AuthViewModel @Inject constructor(
             authRepository.loginWithGoogle(idToken).fold(
                 onSuccess = { (username, hasAccounts) ->
                     if (hasAccounts) {
-                        // Sudah punya akun — langsung ke dashboard akun aktif
-                        val session = sessionFlow.let { flow ->
-                            var s: com.sapicare.app.data.model.UserSession? = null
-                            val job = async { flow.collect { s = it } }
-                            kotlinx.coroutines.delay(200)
-                            job.cancel()
-                            s
-                        }
+                        // Sudah punya akun — ambil session aktif dari flow
+                        val session = authRepository.sessionFlow.firstOrNull()
                         _uiState.value = AuthUiState()
                         onSuccess(session?.role ?: UserRole.PENGURUS)
                     } else {
-                        // Belum punya akun — tampilkan role picker
-                        _uiState.value = AuthUiState(
-                            showRolePicker = true,
-                            googleUsername = username
-                        )
+                        _uiState.value = AuthUiState(showRolePicker = true, googleUsername = username)
                     }
                 },
                 onFailure = { err ->
