@@ -31,6 +31,8 @@ fun DetailSapiPengurusScreen(
     onEdit: (String) -> Unit,
     onDeleted: () -> Unit,
     onRiwayat: (String, String) -> Unit,
+    /** canEditDelete(ownerId) — true kalau boleh edit/hapus */
+    canEditDelete: (String) -> Boolean = { true },
     viewModel: DetailSapiViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -38,6 +40,8 @@ fun DetailSapiPengurusScreen(
 
     LaunchedEffect(sapiId) { viewModel.loadSapi(sapiId) }
     LaunchedEffect(uiState.isDeleted) { if (uiState.isDeleted) onDeleted() }
+
+    val allowEdit = uiState.sapi?.let { canEditDelete(it.ownerId) } ?: false
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -92,7 +96,7 @@ fun DetailSapiPengurusScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Header
+                    // Header card
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -110,26 +114,51 @@ fun DetailSapiPengurusScreen(
                                 if (sapi.fotoUrl.isNotEmpty()) {
                                     AsyncImage(model = sapi.fotoUrl, contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
                                 } else {
-                                    Surface(modifier = Modifier.fillMaxSize(), color = Color.White.copy(0.2f), shape = RoundedCornerShape(55.dp)) {
+                                    Surface(modifier = Modifier.fillMaxSize(),
+                                        color = Color.White.copy(0.2f),
+                                        shape = RoundedCornerShape(55.dp))
+                                    {
                                         Box(contentAlignment = Alignment.Center) { Text("🐄", fontSize = 52.sp) }
                                     }
                                 }
                             }
                             Spacer(Modifier.height(10.dp))
-                            Text(sapi.nama, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
-                            Text("${sapi.jenisSapi} • ${sapi.jenisKelamin}", fontSize = 13.sp, color = Color.White.copy(0.8f))
+                            Text(
+                                sapi.nama,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                color = Color.White)
+                            Text(
+                                "${sapi.jenisSapi} • ${sapi.jenisKelamin}",
+                                fontSize = 13.sp,
+                                color = Color.White.copy(0.8f))
                             Spacer(Modifier.height(6.dp))
-                            Surface(
-                                shape = RoundedCornerShape(20.dp),
-                                color = if (sapi.status == "Sehat") Color(0xFF4CAF50) else Color(0xFFFF9800)
-                            ) {
-                                Text(
-                                    sapi.status,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                                    color = Color.White,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Surface(
+                                    shape = RoundedCornerShape(20.dp),
+                                    color = if (sapi.status == "Sehat") Color(0xFF4CAF50) else Color(
+                                        0xFFFF9800
+                                    )
+                                ) {
+                                    Text(
+                                        sapi.status,
+                                        modifier = Modifier.padding(
+                                            horizontal = 12.dp,
+                                            vertical = 4.dp
+                                        ),
+                                        color = Color.White,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                                if (sapi.beratBadan > 0) {
+                                    Surface(shape = RoundedCornerShape(20.dp), color = Color.White.copy(0.2f)) {
+                                        Text("${sapi.beratBadan.toInt()} kg",
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                            color = Color.White, fontSize = 12.sp)
+                                    }
+                                }
                             }
                         }
                     }
@@ -141,7 +170,10 @@ fun DetailSapiPengurusScreen(
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                         elevation = CardDefaults.cardElevation(0.dp)
                     ) {
-                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp))
+                        {
                             SectionTitle("Informasi Sapi")
                             DetailRow(Icons.Default.Badge, "Nama / ID", sapi.nama)
                             HorizontalDivider(color = Color(0xFFF0F0F0))
@@ -150,10 +182,12 @@ fun DetailSapiPengurusScreen(
                             DetailRow(Icons.Default.Transgender, "Jenis Kelamin", sapi.jenisKelamin)
                             HorizontalDivider(color = Color(0xFFF0F0F0))
                             DetailRow(Icons.Default.CalendarMonth, "Tanggal Lahir", sapi.tanggalLahir)
+
                             if (umur.isNotEmpty()) {
                                 HorizontalDivider(color = Color(0xFFF0F0F0))
                                 DetailRow(Icons.Default.Cake, "Umur", umur)
                             }
+
                             HorizontalDivider(color = Color(0xFFF0F0F0))
                             DetailRow(Icons.Default.Person, "Pemilik", sapi.namaPemilik)
                             HorizontalDivider(color = Color(0xFFF0F0F0))
@@ -202,27 +236,36 @@ fun DetailSapiPengurusScreen(
                         Text("Riwayat Kunjungan", fontWeight = FontWeight.SemiBold)
                     }
 
-                    // Tombol Edit & Hapus
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        OutlinedButton(
-                            onClick = { showDeleteDialog = true },
-                            modifier = Modifier.weight(1f).height(50.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                            shape = RoundedCornerShape(12.dp)
+                    // Edit & Hapus — hanya tampil kalau boleh
+                    if (allowEdit) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(6.dp))
-                            Text("Hapus", fontWeight = FontWeight.SemiBold)
-                        }
-                        Button(
-                            onClick = { onEdit(sapi.id) },
-                            modifier = Modifier.weight(1f).height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
-                            Spacer(Modifier.width(6.dp))
-                            Text("Edit", fontWeight = FontWeight.SemiBold)
+                            OutlinedButton(
+                                onClick = { showDeleteDialog = true },
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(6.dp))
+                                Text("Hapus", fontWeight = FontWeight.SemiBold)
+                            }
+                            Button(
+                                onClick = { onEdit(sapi.id) },
+                                modifier = Modifier.weight(1f).height(50.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(
+                                        0xFF2E7D32
+                                    )
+                                ),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(6.dp))
+                                Text("Edit", fontWeight = FontWeight.SemiBold)
+                            }
                         }
                     }
                     Spacer(Modifier.height(16.dp))
