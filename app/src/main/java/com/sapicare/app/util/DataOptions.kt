@@ -99,4 +99,11 @@ object DataOptions {
         "Hormon",
         "Lainnya"
     )
+
+    val gejalaSapi = listOf(
+        "Tidak Mau Makan", "Demam", "Lemas / Lesu", "Diare",
+        "Perut Kembung", "Batuk / Bersin", "Keluar Lendir Hidung",
+        "Luka pada Kaki / Mulut", "Produksi Susu Menurun",
+        "Berat Badan Turun", "Mata Berair", "Nafas Cepat", "Lainnya"
+    )
 }
