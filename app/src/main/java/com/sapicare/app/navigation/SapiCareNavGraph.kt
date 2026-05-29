@@ -50,12 +50,11 @@ fun SapiCareNavGraph() {
     }
 
     val startDestination = when (session?.role) {
-        UserRole.PENGURUS, UserRole.DINAS -> Screen.Main.route
+        UserRole.PENGURUS, UserRole.DINAS, UserRole.PETERNAK -> Screen.Main.route
         else -> Screen.Login.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
-
         composable(Screen.Login.route) {
             LoginScreen(
                 viewModel = authViewModel,
