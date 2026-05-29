@@ -12,6 +12,8 @@ data class Sapi(
     val jenisPerawatan: List<String> = emptyList(),
     val fotoUrl: String = "",
     val status: String = "Sehat",        // "Sehat" / "Dalam Perawatan"
+    val beratBadan: Double = 0.0,
+    val ownerId: String = "",
     val createdBy: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()

@@ -3,6 +3,8 @@ package com.sapicare.app.data.model
 data class RiwayatKunjungan(
     val id: String = "",
     val sapiId: String = "",
+    val jadwalId: String = "",
+    val keluhanId: String = "",
     val tanggal: String = "",
     val kondisiSapi: String = "",
     val diagnosis: String = "",
