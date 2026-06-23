@@ -6,6 +6,8 @@ sealed class Screen(val route: String) {
     object Main : Screen("main")
     object AccountSwitcher : Screen("account_switcher")
 
+    object Notifications : Screen("notifications")
+
     object TambahSapi : Screen("tambah_sapi")
     object EditSapi : Screen("edit_sapi/{sapiId}") {
         fun createRoute(sapiId: String) = "edit_sapi/$sapiId"
@@ -20,15 +22,11 @@ sealed class Screen(val route: String) {
     object DetailKeluhan : Screen("detail_keluhan/{keluhanId}") {
         fun createRoute(keluhanId: String) = "detail_keluhan/$keluhanId"
     }
-    object DetailJadwal : Screen("detail_jadwal/{jadwalId}") {
-        fun createRoute(jadwalId: String) = "detail_jadwal/$jadwalId"
-    }
     object TindakLanjutJadwal : Screen("tindak_lanjut/{jadwalId}/{sapiId}") {
         fun createRoute(jadwalId: String, sapiId: String) = "tindak_lanjut/$jadwalId/$sapiId"
     }
 }
 
-// Bottom tabs per role
 sealed class BottomTab(val route: String, val label: String) {
     // Pengurus
     object Sapi : BottomTab("tab_sapi", "Data Sapi")
@@ -46,4 +44,5 @@ sealed class BottomTab(val route: String, val label: String) {
     object KeluhanDinas : BottomTab("tab_keluhan_dinas", "Keluhan")
     object JadwalDinas : BottomTab("tab_jadwal_dinas", "Jadwal")
     object RiwayatDinas : BottomTab("tab_riwayat_dinas", "Riwayat")
+    object KelolaAkun : BottomTab("tab_kelola_akun", "Akun")   // tab baru Dinas
 }

@@ -1,5 +1,6 @@
 package com.sapicare.app
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,13 @@ class MainActivity : ComponentActivity() {
 
         // Force light mode — tidak ikut tema sistem
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // Minta permission notifikasi (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1
+            )
+        }
 
         enableEdgeToEdge()
         setContent {

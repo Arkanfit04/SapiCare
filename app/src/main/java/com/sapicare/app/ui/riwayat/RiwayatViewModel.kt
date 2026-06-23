@@ -91,9 +91,5 @@ class RiwayatViewModel @Inject constructor(
         }
     }
 
-    fun deleteRiwayat(id: String) {
-        viewModelScope.launch { riwayatRepository.deleteRiwayat(id) }
-    }
-
     fun clearError() { _formState.value = _formState.value.copy(error = null) }
 }

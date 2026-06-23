@@ -48,7 +48,13 @@ fun JadwalKunjunganScreen(
                     FilterChip(selected = filterStatus == status, onClick = { viewModel.setFilter(status) },
                         label = { Text(label, fontSize = 11.sp) },
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color(0xFF2E7D32), selectedLabelColor = Color.White))
+                            selectedContainerColor = Color(0xFF2E7D32),
+                            selectedLabelColor = Color.White,
+
+                            containerColor = Color.White,
+                            labelColor = Color.Black
+                        )
+                    )
                 }
             }
 
@@ -65,7 +71,10 @@ fun JadwalKunjunganScreen(
                     items(jadwalList, key = { it.id }) { jadwal ->
                         JadwalCard(jadwal = jadwal,
                             onTindakLanjut = { onTindakLanjut(jadwal.id, jadwal.sapiId) },
-                            onBatalkan = { viewModel.batalkanJadwal(jadwal.id) })
+                            onBatalkan = {
+                                viewModel.batalkanJadwal(jadwal)
+                            }
+                        )
                     }
                 }
             }
@@ -86,8 +95,16 @@ fun JadwalCard(jadwal: JadwalKunjungan, onTindakLanjut: () -> Unit, onBatalkan: 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(jadwal.namaSapi, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                    Text("${jadwal.peternak} • ${jadwal.wilayah}", fontSize = 12.sp, color = Color.Gray)
+                    Text(
+                        jadwal.namaSapi,
+                        color = Color.Black,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        "${jadwal.peternak} • ${jadwal.wilayah}",
+                        fontSize = 12.sp,
+                        color = Color.Gray)
                 }
                 Surface(shape = RoundedCornerShape(20.dp), color = statusColor.copy(0.15f)) {
                     Text(jadwal.status.name.lowercase().replaceFirstChar { it.uppercase() },

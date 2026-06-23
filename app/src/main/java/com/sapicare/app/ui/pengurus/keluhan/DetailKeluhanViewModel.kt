@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sapicare.app.data.model.JadwalKunjungan
 import com.sapicare.app.data.model.Keluhan
+import com.sapicare.app.data.model.NotificationItem
 import com.sapicare.app.data.model.StatusKeluhan
 import com.sapicare.app.data.repository.AuthRepository
 import com.sapicare.app.data.repository.JadwalRepository
 import com.sapicare.app.data.repository.KeluhanRepository
+import com.sapicare.app.data.repository.NotificationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -23,7 +25,8 @@ data class DetailKeluhanUiState(
 class DetailKeluhanViewModel @Inject constructor(
     private val keluhanRepository: KeluhanRepository,
     private val jadwalRepository: JadwalRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
 
     private val _keluhan = MutableStateFlow<Keluhan?>(null)
@@ -60,6 +63,15 @@ class DetailKeluhanViewModel @Inject constructor(
             )
             jadwalRepository.addJadwal(jadwal)
             keluhanRepository.updateStatusKeluhan(keluhan.id, StatusKeluhan.DIJADWALKAN, catatan)
+
+            notificationRepository.addNotificationWithPush(
+                NotificationItem(
+                    targetUid = keluhan.peternakUid,
+                    title = "Kunjungan Dijadwalkan",
+                    message = "Kunjungan untuk ${keluhan.namaSapi} dijadwalkan pada $tanggal pukul $waktu.",
+                    type = "JADWAL"
+                )
+            )
             _uiState.value = _uiState.value.copy(isJadwalSaved = true)
         }
     }

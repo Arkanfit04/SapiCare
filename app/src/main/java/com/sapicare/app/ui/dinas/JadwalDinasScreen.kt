@@ -73,7 +73,11 @@ fun JadwalDinasCard(jadwal: JadwalKunjungan) {
         colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.cardElevation(0.dp)) {
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(jadwal.namaSapi, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(
+                    jadwal.namaSapi,
+                    color = Color.Black,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp)
                 Surface(shape = RoundedCornerShape(20.dp), color = statusColor.copy(0.15f)) {
                     Text(jadwal.status.name.lowercase().replaceFirstChar { it.uppercase() },
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),

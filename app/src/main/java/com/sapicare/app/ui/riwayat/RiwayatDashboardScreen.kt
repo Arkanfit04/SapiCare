@@ -89,10 +89,25 @@ fun RiwayatDashboardScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray,
+
+                    focusedLeadingIconColor = Color.Gray,
+                    unfocusedLeadingIconColor = Color.Gray,
+
+                    focusedTrailingIconColor = Color.Gray,
+                    unfocusedTrailingIconColor = Color.Gray,
+
                     focusedBorderColor = Color(0xFF2E7D32),
-                    unfocusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.LightGray,
+
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedContainerColor = Color.White,
+
+                    cursorColor = Color(0xFF2E7D32)
                 )
             )
 
@@ -196,7 +211,11 @@ fun PilihSapiDialog(sapiList: List<Sapi>, onSapiSelected: (Sapi) -> Unit, onDism
 }
 
 @Composable
-fun RiwayatWithSapiCard(riwayat: RiwayatKunjungan, sapi: Sapi, onClick: () -> Unit, onSapiClick: () -> Unit) {
+fun RiwayatWithSapiCard(
+    riwayat: RiwayatKunjungan,
+    sapi: Sapi, onClick: () -> Unit,
+    onSapiClick: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
@@ -215,8 +234,17 @@ fun RiwayatWithSapiCard(riwayat: RiwayatKunjungan, sapi: Sapi, onClick: () -> Un
                     }
                 }
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(sapi.nama, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, color = Color(0xFF1B5E20))
-                    Text("${sapi.jenisSapi} • ${sapi.wilayah}", fontSize = 11.sp, color = Color.Gray, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        sapi.nama,
+                        color = Color.Black,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        "${sapi.jenisSapi} • ${sapi.wilayah}",
+                        fontSize = 11.sp, color = Color.Gray,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis)
                 }
                 Surface(shape = RoundedCornerShape(6.dp), color = Color(0xFFE8F5E9)) {
                     Text(riwayat.tanggal, modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), fontSize = 11.sp, color = Color(0xFF2E7D32), fontWeight = FontWeight.Medium)

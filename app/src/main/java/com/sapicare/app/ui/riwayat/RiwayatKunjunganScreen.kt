@@ -116,9 +116,7 @@ fun RiwayatKunjunganScreen(
                 }
                 items(riwayatList, key = { it.id }) { riwayat ->
                     RiwayatCard(
-                        riwayat = riwayat,
-                        canDelete = canAddKunjungan,
-                        onDelete = { viewModel.deleteRiwayat(riwayat.id) }
+                        riwayat = riwayat
                     )
                 }
             }
@@ -127,24 +125,9 @@ fun RiwayatKunjunganScreen(
 }
 
 @Composable
-fun RiwayatCard(riwayat: RiwayatKunjungan, canDelete: Boolean, onDelete: () -> Unit) {
-    var showDeleteDialog by remember { mutableStateOf(false) }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            icon = { Icon(Icons.Default.DeleteForever, null, tint = MaterialTheme.colorScheme.error) },
-            title = { Text("Hapus Riwayat", fontWeight = FontWeight.Bold) },
-            text = { Text("Riwayat kunjungan tanggal ${riwayat.tanggal} akan dihapus. Yakin?") },
-            confirmButton = {
-                Button(
-                    onClick = { onDelete(); showDeleteDialog = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-                ) { Text("Hapus") }
-            },
-            dismissButton = { OutlinedButton(onClick = { showDeleteDialog = false }) { Text("Batal") } }
-        )
-    }
+fun RiwayatCard(
+    riwayat: RiwayatKunjungan
+) {
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -155,7 +138,6 @@ fun RiwayatCard(riwayat: RiwayatKunjungan, canDelete: Boolean, onDelete: () -> U
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -169,11 +151,6 @@ fun RiwayatCard(riwayat: RiwayatKunjungan, canDelete: Boolean, onDelete: () -> U
                         )
                     }
                     Text("oleh ${riwayat.namaPetugas}", fontSize = 11.sp, color = Color.Gray)
-                }
-                if (canDelete) {
-                    IconButton(onClick = { showDeleteDialog = true }, modifier = Modifier.size(28.dp)) {
-                        Icon(Icons.Default.DeleteOutline, null, tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
-                    }
                 }
             }
 
@@ -239,7 +216,27 @@ fun TambahRiwayatDialog(sapiId: String, viewModel: RiwayatViewModel, onDismiss: 
                     leadingIcon = { Icon(Icons.Default.MonitorHeart, null) },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 3,
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF2E7D32), focusedLabelColor = Color(0xFF2E7D32))
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+
+                        focusedLeadingIconColor = Color.Gray,
+                        unfocusedLeadingIconColor = Color.Gray,
+
+                        focusedTrailingIconColor = Color.Gray,
+                        unfocusedTrailingIconColor = Color.Gray,
+
+                        focusedBorderColor = Color(0xFF2E7D32),
+                        unfocusedBorderColor = Color.LightGray,
+
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+
+                        cursorColor = Color(0xFF2E7D32)
+                    )
                 )
 
                 DropdownField(value = formState.diagnosis, onValueChange = viewModel::onDiagnosisChange, label = "Diagnosis *", options = DataOptions.diagnosisSapi, leadingIcon = Icons.Default.MedicalInformation)
@@ -253,7 +250,27 @@ fun TambahRiwayatDialog(sapiId: String, viewModel: RiwayatViewModel, onDismiss: 
                     leadingIcon = { Icon(Icons.Default.Notes, null) },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 3,
-                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF2E7D32), focusedLabelColor = Color(0xFF2E7D32))
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+
+                        focusedLeadingIconColor = Color.Gray,
+                        unfocusedLeadingIconColor = Color.Gray,
+
+                        focusedTrailingIconColor = Color.Gray,
+                        unfocusedTrailingIconColor = Color.Gray,
+
+                        focusedBorderColor = Color(0xFF2E7D32),
+                        unfocusedBorderColor = Color.LightGray,
+
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+
+                        cursorColor = Color(0xFF2E7D32)
+                    )
                 )
 
                 Text("Update Status Sapi", fontWeight = FontWeight.Medium, fontSize = 13.sp, color = Color(0xFF424242))

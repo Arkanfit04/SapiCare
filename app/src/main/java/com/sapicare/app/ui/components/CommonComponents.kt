@@ -24,7 +24,12 @@ import java.util.*
 // ── DatePickerField ───────────────────────────────────────────────────────────
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerField(value: String, onValueChange: (String) -> Unit, label: String) {
+fun DatePickerField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    enabled: Boolean = true
+) {
     var showPicker by remember { mutableStateOf(false) }
 
     OutlinedTextField(
@@ -42,8 +47,20 @@ fun DatePickerField(value: String, onValueChange: (String) -> Unit, label: Strin
             .fillMaxWidth()
             .clickable { showPicker = true },
         colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+
+            focusedLabelColor = Color(0xFF2E7D32),
+            unfocusedLabelColor = Color.Gray,
+
             focusedBorderColor = Color(0xFF2E7D32),
-            focusedLabelColor = Color(0xFF2E7D32)
+            unfocusedBorderColor = Color.Gray,
+
+            focusedLeadingIconColor = Color(0xFF757575),
+            unfocusedLeadingIconColor = Color(0xFF757575),
+
+            focusedTrailingIconColor = Color(0xFF2E7D32),
+            unfocusedTrailingIconColor = Color(0xFF757575)
         )
     )
 

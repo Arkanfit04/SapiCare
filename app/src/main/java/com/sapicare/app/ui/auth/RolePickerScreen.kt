@@ -4,7 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,7 +33,9 @@ fun RolePickerScreen(
     username: String,
     isLoading: Boolean,
     error: String?,
-    onRoleSelected: (UserRole) -> Unit
+    onRoleSelected: (UserRole) -> Unit,
+    onBack: () -> Unit
+
 ) {
     var selectedRole by remember { mutableStateOf<UserRole?>(null) }
 
@@ -44,17 +51,31 @@ fun RolePickerScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Kembali",
+                        tint = Color.White
+                    )
+                }
+            }
+            Spacer(Modifier.height(48.dp))
             Text("🐄", fontSize = 56.sp)
             Spacer(Modifier.height(12.dp))
             Text(
-                "Halo, $username!",
+                text = "Halo, $username!",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
+                textAlign = TextAlign.Center
             )
             Text(
                 "Pilih peran kamu di SapiCare",
@@ -80,11 +101,6 @@ fun RolePickerScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         color = Color(0xFF1B5E20)
-                    )
-                    Text(
-                        "Role dapat diganti nanti di menu Kelola Akun",
-                        fontSize = 12.sp,
-                        color = Color.Gray
                     )
 
                     // Error
@@ -116,13 +132,6 @@ fun RolePickerScreen(
                             "👨‍🌾",
                             "Peternak",
                             "Dapat menambah dan mengelola data sapi"
-                        ),
-
-                        RoleItem(
-                            UserRole.DINAS,
-                            "🏛️",
-                            "Dinas",
-                            "Hanya dapat melihat data sapi dan riwayat kunjungan"
                         )
                     ).forEach { (role, icon, title, desc) ->
                         RoleOption(
@@ -156,6 +165,7 @@ fun RolePickerScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
+
                     }
                 }
             }
@@ -187,7 +197,7 @@ fun RoleOption(
         color = bgColor
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -202,7 +212,8 @@ fun RoleOption(
                 Text(
                     description,
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = Color.Gray,
+                    maxLines = 2
                 )
             }
             if (isSelected) {

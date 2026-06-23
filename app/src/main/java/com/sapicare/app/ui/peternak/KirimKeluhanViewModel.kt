@@ -1,11 +1,15 @@
 package com.sapicare.app.ui.peternak
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sapicare.app.data.model.Keluhan
+import com.sapicare.app.data.model.NotificationItem
 import com.sapicare.app.data.model.Sapi
 import com.sapicare.app.data.model.UserSession
+import com.sapicare.app.data.repository.AuthRepository
 import com.sapicare.app.data.repository.KeluhanRepository
+import com.sapicare.app.data.repository.NotificationRepository
 import com.sapicare.app.data.repository.SapiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -29,7 +33,10 @@ data class KirimKeluhanFormState(
 @HiltViewModel
 class KirimKeluhanViewModel @Inject constructor(
     private val sapiRepository: SapiRepository,
-    private val keluhanRepository: KeluhanRepository
+    private val keluhanRepository: KeluhanRepository,
+    private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository
+
 ) : ViewModel() {
 
     private val _ownerId = MutableStateFlow("")
@@ -74,6 +81,32 @@ class KirimKeluhanViewModel @Inject constructor(
                 usulanTanggalKunjungan = s.usulanTanggalKunjungan
             )
             keluhanRepository.addKeluhan(keluhan)
+
+            val pengurusList = authRepository.getApprovedPengurus()
+
+            Log.d(
+                "KELUHAN",
+                "jumlah pengurus = ${pengurusList.size}"
+            )
+
+            Log.d("KELUHAN", "Mulai kirim")
+
+            pengurusList.forEach { pengurus ->
+
+                Log.d(
+                    "KELUHAN",
+                    "Notif ke ${pengurus.uid}"
+                )
+
+                notificationRepository.addNotificationWithPush(
+                    NotificationItem(
+                        targetUid = pengurus.uid,
+                        title = "Keluhan Baru",
+                        message = "${session?.username} mengirim keluhan untuk ${s.namaSapi}",
+                        type = "KELUHAN"
+                    )
+                )
+            }
             _formState.value = KirimKeluhanFormState(isSent = true)
         }
     }

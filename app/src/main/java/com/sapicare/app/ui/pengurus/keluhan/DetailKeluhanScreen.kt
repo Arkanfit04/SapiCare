@@ -107,7 +107,12 @@ fun DetailKeluhanScreen(
                             Text(k.deskripsiKeluhan, fontSize = 14.sp, color = Color(0xFF212121))
                             if (k.gejala.isNotEmpty()) {
                                 HorizontalDivider(color = Color(0xFFF0F0F0))
-                                Text("Gejala", fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = Color(0xFF2E7D32))
+                                Text(
+                                    "Gejala",
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 13.sp
+                                )
                                 k.gejala.forEach { g ->
                                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                         Icon(Icons.Default.Warning, null, tint = Color(0xFFFF9800), modifier = Modifier.size(14.dp))

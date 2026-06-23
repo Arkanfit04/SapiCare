@@ -1,5 +1,6 @@
 package com.sapicare.app.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.sapicare.app.data.model.Sapi
@@ -21,7 +22,13 @@ class SapiRepository @Inject constructor(
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error)
+                    android.util.Log.e(
+                        "SapiRepository",
+                        "Firestore error",
+                        error
+                    )
+
+                    trySend(emptyList())
                     return@addSnapshotListener
                 }
                 val list = snapshot?.documents?.mapNotNull { doc ->
@@ -38,7 +45,16 @@ class SapiRepository @Inject constructor(
             .whereEqualTo("ownerId", ownerId)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    android.util.Log.e(
+                        "SapiRepository",
+                        "Firestore error",
+                        error
+                    )
+
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Sapi::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
@@ -53,7 +69,16 @@ class SapiRepository @Inject constructor(
             .whereEqualTo("wilayah", wilayah)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    android.util.Log.e(
+                        "SapiRepository",
+                        "Firestore error",
+                        error
+                    )
+
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Sapi::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
@@ -67,7 +92,15 @@ class SapiRepository @Inject constructor(
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
-                    close(error); return@addSnapshotListener }
+                    android.util.Log.e(
+                        "SapiRepository",
+                        "Firestore error",
+                        error
+                    )
+                    Log.e("SAPI_FLOW", "Permission denied", error)
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Sapi::class.java)?.copy(id = doc.id)
                 }?.filter { sapi ->
@@ -84,7 +117,16 @@ class SapiRepository @Inject constructor(
             .whereEqualTo("ownerId", ownerId)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    android.util.Log.e(
+                        "SapiRepository",
+                        "Firestore error",
+                        error
+                    )
+
+                    trySend(emptyList())
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(Sapi::class.java)?.copy(id = doc.id)
                 }?.filter { sapi ->

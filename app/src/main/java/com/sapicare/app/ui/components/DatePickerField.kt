@@ -18,6 +18,7 @@ fun DatePickerField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var showPicker by remember { mutableStateOf(false) }
@@ -53,7 +54,23 @@ fun DatePickerField(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color(0xFF2E7D32), focusedLabelColor = Color(0xFF2E7D32)
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            disabledTextColor = Color.Black,
+
+            focusedLabelColor = Color(0xFF2E7D32),
+            unfocusedLabelColor = Color.Gray,
+            disabledLabelColor = Color.Gray,
+
+            focusedBorderColor = Color(0xFF2E7D32),
+            unfocusedBorderColor = Color.Gray,
+            disabledBorderColor = Color.Gray,
+
+            focusedLeadingIconColor = Color.Gray,
+            unfocusedLeadingIconColor = Color.Gray,
+
+            focusedTrailingIconColor = Color(0xFF2E7D32),
+            unfocusedTrailingIconColor = Color.Gray
         )
     )
 }

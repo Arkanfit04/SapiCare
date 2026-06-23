@@ -71,18 +71,47 @@ fun KeluhanDinasCard(keluhan: Keluhan) {
     }
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.cardElevation(0.dp)) {
-        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically) {
-                Text(keluhan.namaSapi, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                Surface(shape = RoundedCornerShape(20.dp), color = statusColor.copy(0.15f)) {
-                    Text(keluhan.status.name.lowercase().replaceFirstChar { it.uppercase() },
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
-                        fontSize = 11.sp, color = statusColor, fontWeight = FontWeight.SemiBold)
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    keluhan.namaSapi,
+                    color = Color.Black,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = statusColor.copy(0.15f)
+                ) {
+                    Text(
+                        keluhan.status.name.lowercase()
+                            .replaceFirstChar { it.uppercase() },
+                        modifier = Modifier.padding(horizontal = 10.dp,
+                            vertical = 3.dp),
+                        fontSize = 11.sp,
+                        color = statusColor,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
-            Text("${keluhan.peternak} • ${keluhan.wilayah}", fontSize = 12.sp, color = Color.Gray)
-            Text(keluhan.deskripsiKeluhan, fontSize = 13.sp, color = Color(0xFF424242), maxLines = 2)
+            Text(
+                "${keluhan.peternak} • ${keluhan.wilayah}",
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+            Text(
+                keluhan.deskripsiKeluhan,
+                fontSize = 13.sp,
+                color = Color(0xFF424242),
+                maxLines = 2
+            )
         }
     }
 }

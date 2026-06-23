@@ -6,8 +6,13 @@ import com.sapicare.app.data.model.Sapi
 import com.sapicare.app.data.model.UserSession
 import com.sapicare.app.data.repository.SapiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,7 +21,6 @@ class SapiSayaViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _ownerId = MutableStateFlow("")
-    private val _wilayah = MutableStateFlow("")
     private val _searchQuery = MutableStateFlow("")
     private val _showSapiSaya = MutableStateFlow(true)
 
@@ -28,24 +32,28 @@ class SapiSayaViewModel @Inject constructor(
             if (id.isEmpty()) flowOf(emptyList())
             else sapiRepository.getSapiByOwner(id)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
 
-    val sapiWilayah: StateFlow<List<Sapi>> = _wilayah
-        .flatMapLatest { w ->
-            if (w.isEmpty()) sapiRepository.getAllSapi()
-            else sapiRepository.getSapiByWilayah(w)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val sapiWilayah: StateFlow<List<Sapi>> =
+        sapiRepository.getAllSapi()
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                emptyList()
+            )
 
     fun init(session: UserSession?) {
-        _ownerId.value = session?.uid ?: ""
-        // Wilayah diambil dari sapi miliknya (lazy — pakai getAllSapi kalau belum ada)
-        viewModelScope.launch {
-            sapiSaya.first { it.isNotEmpty() || _ownerId.value.isNotEmpty() }.let { list ->
-                val w = list.firstOrNull()?.wilayah ?: ""
-                if (w.isNotEmpty()) _wilayah.value = w
-            }
+
+        if (session == null) {
+            _ownerId.value = ""
+            return
         }
+
+        _ownerId.value = session.uid
     }
 
     fun onSearchChange(q: String) { _searchQuery.value = q }

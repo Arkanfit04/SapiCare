@@ -5,5 +5,6 @@ data class SavedAccount(
     val email: String = "",
     val username: String = "",
     val role: UserRole = UserRole.PENGURUS,
-    val photoUrl: String = ""
+    val photoUrl: String = "",
+    val approvalStatus: ApprovalStatus = ApprovalStatus.APPROVED
 )

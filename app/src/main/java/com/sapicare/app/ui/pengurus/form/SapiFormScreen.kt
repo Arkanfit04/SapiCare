@@ -70,13 +70,6 @@ fun SapiFormScreen(
                 .verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            if (uiState.error != null) {
-                Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer,
-                    modifier = Modifier.fillMaxWidth()) {
-                    Text(uiState.error ?: "", modifier = Modifier.padding(12.dp),
-                        color = MaterialTheme.colorScheme.error, fontSize = 13.sp)
-                }
-            }
 
             FormCard {
                 SectionHeader("Identitas Sapi")
@@ -105,7 +98,7 @@ fun SapiFormScreen(
             }
 
             FormCard {
-                SectionHeader("Berat Badan")
+                SectionHeader("Berat Badan (opsional)")
                 FormTextField(
                     value = if (uiState.beratBadan == 0.0) "" else uiState.beratBadan.toString(),
                     onValueChange = { v -> viewModel.onBeratBadanChange(v.toDoubleOrNull() ?: 0.0) },
@@ -131,20 +124,14 @@ fun SapiFormScreen(
                     }
                 }
                 FormTextField(value = uiState.keterangan, onValueChange = viewModel::onKeteranganChange,
-                    label = "Keterangan", icon = Icons.Default.Notes, maxLines = 3)
+                    label = "Keterangan (opsional)", icon = Icons.Default.Notes, maxLines = 3)
             }
 
-            FormCard {
-                SectionHeader("Jenis Perawatan")
-                com.sapicare.app.util.DataOptions.jenisPerawatan.forEach { p ->
-                    val isSelected = p in uiState.jenisPerawatan
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = isSelected,
-                            onCheckedChange = { viewModel.togglePerawatan(p) },
-                            colors = CheckboxDefaults.colors(checkedColor = Color(0xFF2E7D32)))
-                        Text(p, fontSize = 14.sp, color = Color(0xFF212121))
-                    }
+            if (uiState.error != null) {
+                Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.fillMaxWidth()) {
+                    Text(uiState.error ?: "", modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.colorScheme.error, fontSize = 13.sp)
                 }
             }
 
@@ -172,7 +159,9 @@ private fun FormCard(content: @Composable ColumnScope.() -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(0.dp)) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content)
     }
 }
@@ -193,7 +182,17 @@ private fun FormTextField(value: String, onValueChange: (String) -> Unit, label:
         maxLines = maxLines,
         shape = RoundedCornerShape(10.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = Color(0xFF2E7D32), focusedLabelColor = Color(0xFF2E7D32)
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+
+            focusedLabelColor = Color(0xFF2E7D32),
+            unfocusedLabelColor = Color.Gray,
+
+            focusedBorderColor = Color(0xFF2E7D32),
+            unfocusedBorderColor = Color.Gray,
+
+            focusedPlaceholderColor = Color.Gray,
+            unfocusedPlaceholderColor = Color.Gray
         )
     )
 }

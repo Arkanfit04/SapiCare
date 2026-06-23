@@ -93,8 +93,10 @@ class SapiFormViewModel @Inject constructor(
         if (s.nama.isBlank()) { _uiState.value = s.copy(error = "Nama sapi tidak boleh kosong"); return }
         if (s.jenisSapi.isBlank()) { _uiState.value = s.copy(error = "Jenis sapi harus dipilih"); return }
         if (s.jenisKelamin.isBlank()) { _uiState.value = s.copy(error = "Jenis kelamin harus dipilih"); return }
+        if (s.tanggalLahir.isBlank()) { _uiState.value = s.copy(error = "Tanggal lahir harus dipilih"); return }
         if (s.namaPemilik.isBlank()) { _uiState.value = s.copy(error = "Nama pemilik tidak boleh kosong"); return }
         if (s.wilayah.isBlank()) { _uiState.value = s.copy(error = "Wilayah harus dipilih"); return }
+
 
         viewModelScope.launch {
             _uiState.value = s.copy(isLoading = true, error = null)
@@ -118,9 +120,13 @@ class SapiFormViewModel @Inject constructor(
                 )
                 if (s.existingSapiId.isEmpty()) repository.insertSapi(sapi)
                 else repository.updateSapi(sapi)
-                _uiState.value = _uiState.value.copy(isLoading = false, isSaved = true)
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    isSaved = true)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = "Gagal menyimpan: ${e.message}")
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Gagal menyimpan: ${e.message}")
             }
         }
     }

@@ -29,7 +29,6 @@ data class TindakLanjutFormState(
     val statusSapi: String = "Sehat",
     val keluhanId: String = ""
 )
-
 @HiltViewModel
 class TindakLanjutViewModel @Inject constructor(
     private val jadwalRepository: JadwalRepository,

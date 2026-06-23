@@ -15,6 +15,7 @@ fun DropdownField(
     label: String,
     options: List<String>,
     leadingIcon: ImageVector? = null,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -39,8 +40,23 @@ fun DropdownField(
                 .fillMaxWidth()
                 .menuAnchor(),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF2E7D32),
-                focusedLabelColor = Color(0xFF2E7D32)
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+
+                focusedPlaceholderColor = Color.Gray,
+                unfocusedPlaceholderColor = Color.Gray,
+
+                focusedLeadingIconColor = Color(0xFF795548),
+                unfocusedLeadingIconColor = Color.Gray,
+
+                focusedTrailingIconColor = Color(0xFF795548),
+                unfocusedTrailingIconColor = Color.Gray,
+
+                focusedBorderColor = Color(0xFF795548),
+                unfocusedBorderColor = Color(0xFFE0E0E0),
+
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
             )
         )
 

@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sapicare.app.data.model.JadwalKunjungan
 import com.sapicare.app.data.model.StatusJadwal
+import com.sapicare.app.data.model.StatusKeluhan
 import com.sapicare.app.data.repository.JadwalRepository
+import com.sapicare.app.data.repository.KeluhanRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JadwalKunjunganViewModel @Inject constructor(
-    private val jadwalRepository: JadwalRepository
+    private val jadwalRepository: JadwalRepository,
+    private val keluhanRepository: KeluhanRepository
 ) : ViewModel() {
 
     private val _filterStatus = MutableStateFlow<StatusJadwal?>(null)
@@ -26,7 +29,20 @@ class JadwalKunjunganViewModel @Inject constructor(
 
     fun setFilter(s: StatusJadwal?) { _filterStatus.value = s }
 
-    fun batalkanJadwal(id: String) {
-        viewModelScope.launch { jadwalRepository.updateStatusJadwal(id, StatusJadwal.DIBATALKAN) }
+    fun batalkanJadwal(jadwal: JadwalKunjungan) {
+        viewModelScope.launch {
+
+            jadwalRepository.updateStatusJadwal(
+                jadwal.id,
+                StatusJadwal.DIBATALKAN
+            )
+
+            if (jadwal.keluhanId.isNotBlank()) {
+                keluhanRepository.updateStatusKeluhan(
+                    jadwal.keluhanId,
+                    StatusKeluhan.MENUNGGU
+                )
+            }
+        }
     }
 }

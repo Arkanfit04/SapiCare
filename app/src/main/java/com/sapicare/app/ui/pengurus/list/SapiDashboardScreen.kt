@@ -29,6 +29,8 @@ fun SapiDashboardScreen(
     onDetailSapi: (String) -> Unit,
     onLogout: () -> Unit,
     onSwitchAccount: () -> Unit,
+    onNotificationClick: () -> Unit,
+    unreadCount: Int,
     viewModel: SapiViewModel = hiltViewModel()
 ) {
     val sapiList by viewModel.sapiList.collectAsState()
@@ -45,6 +47,7 @@ fun SapiDashboardScreen(
                             Text(
                                 "Halo, $username 👋",
                                 fontSize = 12.sp,
+                                maxLines = 1,
                                 color = Color.White.copy(alpha = 0.85f)
                             )
                         }
@@ -52,33 +55,85 @@ fun SapiDashboardScreen(
                 },
                 windowInsets = WindowInsets(0),
                 actions = {
+
+                    BadgedBox(
+                        badge = {
+                            if (unreadCount > 0) {
+                                Badge(
+                                    modifier = Modifier.offset(
+                                        x = (-6).dp,
+                                        y = 6.dp
+                                    )
+                                )
+                            }
+                        }
+                    ) {
+                        IconButton(
+                            onClick = onNotificationClick
+                        ) {
+                            Icon(
+                                Icons.Default.Notifications,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
+
                     Box {
-                        IconButton(onClick = { showMenu = true }) {
+                        IconButton(
+                            onClick = { showMenu = true }
+                        ) {
                             BadgedBox(
                                 badge = {
                                     if (savedAccountsCount > 1) {
-                                        Badge { Text(savedAccountsCount.toString()) }
+                                        Badge {
+                                            Text(savedAccountsCount.toString())
+                                        }
                                     }
                                 }
                             ) {
-                                Icon(Icons.Default.ManageAccounts, null, tint = Color.White)
+                                Icon(
+                                    Icons.Default.ManageAccounts,
+                                    contentDescription = "Akun",
+                                    tint = Color.White
+                                )
                             }
                         }
+
                         DropdownMenu(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Kelola Akun") },
-                                onClick = { showMenu = false; onSwitchAccount() },
-                                leadingIcon = { Icon(Icons.Default.SwitchAccount, null) }
-                            )
-                            HorizontalDivider()
-                            DropdownMenuItem(
-                                text = { Text("Keluar", color = MaterialTheme.colorScheme.error) },
-                                onClick = { showMenu = false; onLogout() },
+                                text = { Text("Profile") },
+                                onClick = {
+                                    showMenu = false
+                                    onSwitchAccount()
+                                },
                                 leadingIcon = {
-                                    Icon(Icons.AutoMirrored.Filled.Logout, null, tint = MaterialTheme.colorScheme.error)
+                                    Icon(Icons.Default.SwitchAccount, null)
+                                }
+                            )
+
+                            HorizontalDivider()
+
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        "Keluar",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    onLogout()
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.Logout,
+                                        null,
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
                                 }
                             )
                         }
@@ -93,6 +148,7 @@ fun SapiDashboardScreen(
         floatingActionButton = {
             if (canAddSapi) {
                 FloatingActionButton(
+                    modifier = Modifier.size(56.dp),
                     onClick = onTambahSapi,
                     containerColor = Color(0xFF2E7D32),
                     contentColor = Color.White
@@ -127,34 +183,73 @@ fun SapiDashboardScreen(
                         }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .heightIn(min = 56.dp),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+
+                    focusedPlaceholderColor = Color.Gray,
+                    unfocusedPlaceholderColor = Color.Gray,
+
+                    focusedLeadingIconColor = Color.Gray,
+                    unfocusedLeadingIconColor = Color.Gray,
+
+                    focusedTrailingIconColor = Color.Gray,
+                    unfocusedTrailingIconColor = Color.Gray,
+
                     focusedBorderColor = Color(0xFF2E7D32),
-                    unfocusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.LightGray,
+
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedContainerColor = Color.White,
+
+                    cursorColor = Color(0xFF2E7D32)
                 )
             )
 
             Spacer(Modifier.height(8.dp))
 
             if (sapiList.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("🐄", fontSize = 56.sp)
-                        Spacer(Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         Text(
-                            if (searchQuery.isEmpty()) "Belum ada data sapi" else "Sapi tidak ditemukan",
-                            fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color(0xFF424242)
+                            "🐄",
+                            fontSize = 64.sp
                         )
-                        Spacer(Modifier.height(4.dp))
+
+                        Spacer(Modifier.height(16.dp))
+
                         Text(
-                            if (searchQuery.isEmpty() && canAddSapi) "Ketuk tombol + untuk menambahkan"
-                            else if (searchQuery.isNotEmpty()) "Coba kata kunci lain"
-                            else "Data akan muncul setelah pengurus menambahkan",
-                            color = Color.Gray, fontSize = 13.sp
+                            text = if (searchQuery.isEmpty())
+                                "Belum ada data sapi"
+                            else
+                                "Sapi tidak ditemukan",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            color = Color(0xFF424242)
+                        )
+
+                        Spacer(Modifier.height(8.dp))
+
+                        Text(
+                            text = if (searchQuery.isEmpty())
+                                "Belum ada data sapi yang tersedia"
+                            else
+                                "Coba gunakan kata kunci lain",
+                            color = Color.Gray,
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -176,18 +271,28 @@ fun SapiDashboardScreen(
 }
 
 @Composable
-fun StatCard(modifier: Modifier = Modifier, icon: String, label: String, value: String, color: Color) {
+fun StatCard(
+    modifier: Modifier = Modifier,
+    icon: String,
+    label: String,
+    value: String,
+    color: Color
+) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
-        Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(icon, fontSize = 20.sp)
             Spacer(Modifier.height(4.dp))
-            Text(value, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = color)
-            Text(label, fontSize = 10.sp, color = Color.Gray)
+            Text(value, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = color)
+            Text(
+                label,
+                fontSize = 10.sp,
+                maxLines = 1,
+                color = Color.Gray)
         }
     }
 }

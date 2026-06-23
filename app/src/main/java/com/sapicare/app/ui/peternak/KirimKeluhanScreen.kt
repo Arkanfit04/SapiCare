@@ -31,6 +31,7 @@ fun KirimKeluhanScreen(
     viewModel: KirimKeluhanViewModel = hiltViewModel()
 ) {
     val sapiList by viewModel.sapiSaya.collectAsState()
+    val hasSapi = sapiList.isNotEmpty()
     val formState by viewModel.formState.collectAsState()
     var showForm by remember { mutableStateOf(false) }
 
@@ -66,20 +67,30 @@ fun KirimKeluhanScreen(
                 onClick = { showForm = true },
                 icon = { Icon(Icons.Default.Add, null) },
                 text = { Text("Kirim Keluhan Baru") },
-                containerColor = Color(0xFF795548), contentColor = Color.White
+                containerColor = Color(0xFF795548),
+                contentColor = Color.White
             )
         },
         containerColor = Color(0xFFF5F5F5)
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding).padding(32.dp),
-            contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .padding(32.dp),
+            contentAlignment = Alignment.Center)
+        {
+            Column(horizontalAlignment = Alignment.CenterHorizontally)
+            {
                 Text("📋", fontSize = 56.sp)
                 Spacer(Modifier.height(12.dp))
-                Text("Kirim keluhan kondisi sapi kamu", fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp, color = Color(0xFF424242))
+                Text("Kirim keluhan kondisi sapi kamu",
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = Color(0xFF424242))
                 Spacer(Modifier.height(4.dp))
-                Text("Pengurus / Dokter akan menindaklanjuti", color = Color.Gray, fontSize = 13.sp)
+                Text("Pengurus / Dokter akan menindaklanjuti",
+                    color = Color.Gray,
+                    fontSize = 13.sp)
             }
         }
     }
@@ -98,62 +109,153 @@ fun KirimKeluhanDialog(
     onSend: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    AlertDialog(onDismissRequest = onDismiss, modifier = Modifier.fillMaxWidth()) {
-        Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-            Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val hasSapi = sapiList.isNotEmpty()
 
-                Text("Kirim Keluhan Sapi", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF4E342E))
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Card(
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()
+                    )
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
 
-                AnimatedVisibility(visible = formState.error != null) {
-                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.errorContainer) {
-                        Text(formState.error ?: "", modifier = Modifier.padding(12.dp),
-                            color = MaterialTheme.colorScheme.error, fontSize = 13.sp)
+                Text("Kirim Keluhan Sapi",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Color(0xFF4E342E))
+
+                if (sapiList.isEmpty()) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFFFFF3E0)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.WarningAmber,
+                                null,
+                                tint = Color(0xFFE65100)
+                            )
+
+                            Text(
+                                "Belum ada data sapi. Tambahkan sapi terlebih dahulu.",
+                                color = Color(0xFFE65100),
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = formState.error != null)
+                {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.errorContainer)
+                    {
+                        Text(formState.error ?: "",
+                            modifier = Modifier.padding(12.dp),
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 13.sp)
                     }
                 }
 
                 // Pilih sapi
                 DropdownField(
-                    value = formState.namaSapi, onValueChange = { nama ->
+                    value = formState.namaSapi,
+                    enabled = hasSapi,
+                    onValueChange = { nama ->
                         val id = sapiList.find { it.first == nama }?.second ?: ""
                         onSapiSelected(id, nama)
                     },
                     label = "Pilih Sapi *",
                     options = sapiList.map { it.first },
-                    leadingIcon = Icons.Default.Pets
+                    leadingIcon = Icons.Default.Pets,
                 )
 
-                DatePickerField(value = formState.tanggalKeluhan, onValueChange = onTanggalChange,
+                DatePickerField(
+                    value = formState.tanggalKeluhan,
+                    onValueChange = onTanggalChange,
+                    enabled = hasSapi,
                     label = "Tanggal Keluhan")
 
                 OutlinedTextField(
-                    value = formState.deskripsiKeluhan, onValueChange = onDeskripsiChange,
+                    value = formState.deskripsiKeluhan,
+                    onValueChange = onDeskripsiChange,
+                    enabled = hasSapi,
                     label = { Text("Deskripsi Keluhan *") },
-                    leadingIcon = { Icon(Icons.Default.Description, null) },
-                    modifier = Modifier.fillMaxWidth(), maxLines = 4,
+                    leadingIcon = {
+                        Icon(Icons.Default.Description, null) },
+                    modifier =
+                        Modifier.fillMaxWidth(), maxLines = 4,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color(0xFF795548), focusedLabelColor = Color(0xFF795548)
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+
+                        focusedPlaceholderColor = Color.Gray,
+                        unfocusedPlaceholderColor = Color.Gray,
+
+                        focusedLeadingIconColor = Color(0xFF795548),
+                        unfocusedLeadingIconColor = Color.Gray,
+
+                        focusedTrailingIconColor = Color(0xFF795548),
+                        unfocusedTrailingIconColor = Color.Gray,
+
+                        focusedBorderColor = Color(0xFF795548),
+                        unfocusedBorderColor = Color(0xFFE0E0E0),
+
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
                     )
                 )
 
-                Text("Gejala yang Terlihat", fontWeight = FontWeight.Medium, fontSize = 13.sp)
+                Text(
+                    "Gejala yang Terlihat",
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF424242)
+                )
                 DataOptions.gejalaSapi.forEach { gejala ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = gejala in formState.gejala,
+                    Row(verticalAlignment = Alignment.CenterVertically)
+                    {
+                        Checkbox(
+                            checked = gejala in formState.gejala,
+                            enabled = hasSapi,
                             onCheckedChange = { onToggleGejala(gejala) },
-                            colors = CheckboxDefaults.colors(checkedColor = Color(0xFF795548)))
-                        Text(gejala, fontSize = 13.sp)
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = Color(0xFF795548),
+                                uncheckedColor = Color(0xFF757575)
+                            )
+                        )
+                        Text(
+                            gejala,
+                            fontSize = 13.sp,
+                            color = Color.Black,
+                        )
                     }
                 }
 
-                DatePickerField(value = formState.usulanTanggalKunjungan, onValueChange = onUsulanTanggalChange,
+                DatePickerField(
+                    value = formState.usulanTanggalKunjungan,
+                    onValueChange = onUsulanTanggalChange,
+                    enabled = hasSapi,
                     label = "Usul Tanggal Kunjungan (opsional)")
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(10.dp)) { Text("Batal") }
                     Button(onClick = onSend, modifier = Modifier.weight(1f),
-                        enabled = !formState.isLoading,
+                        enabled = sapiList.isNotEmpty() && !formState.isLoading,
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF795548)),
                         shape = RoundedCornerShape(10.dp)) {
                         if (formState.isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp),

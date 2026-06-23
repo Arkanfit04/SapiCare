@@ -65,8 +65,17 @@ fun TindakLanjutScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text("🐄", fontSize = 32.sp)
                         Column {
-                            Text(formState.namaSapi, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                            Text("Tgl Kunjungan: ${formState.tanggalKunjungan}", fontSize = 12.sp, color = Color.Gray)
+                            Text(
+                                formState.namaSapi,
+                                color = Color.Black,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 15.sp
+                            )
+                            Text(
+                                "Tgl Kunjungan: ${formState.tanggalKunjungan}",
+                                fontSize = 12.sp,
+                                color = Color.Gray
+                            )
                         }
                     }
                 }
@@ -81,7 +90,28 @@ fun TindakLanjutScreen(
                         label = { Text("Kondisi / Keluhan Sapi *") },
                         leadingIcon = { Icon(Icons.Default.MonitorHeart, null) },
                         modifier = Modifier.fillMaxWidth(), maxLines = 3,
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF2E7D32)))
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray,
+
+                            focusedLeadingIconColor = Color.Gray,
+                            unfocusedLeadingIconColor = Color.Gray,
+
+                            focusedTrailingIconColor = Color.Gray,
+                            unfocusedTrailingIconColor = Color.Gray,
+
+                            focusedBorderColor = Color(0xFF2E7D32),
+                            unfocusedBorderColor = Color.LightGray,
+
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+
+                            cursorColor = Color(0xFF2E7D32)
+                        )
+                    )
 
                     DropdownField(value = formState.diagnosis, onValueChange = viewModel::onDiagnosisChange,
                         label = "Diagnosis *", options = DataOptions.diagnosisSapi, leadingIcon = Icons.Default.MedicalInformation)
@@ -94,9 +124,35 @@ fun TindakLanjutScreen(
                         label = { Text("Catatan Tambahan") },
                         leadingIcon = { Icon(Icons.Default.Notes, null) },
                         modifier = Modifier.fillMaxWidth(), maxLines = 3,
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color(0xFF2E7D32)))
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
 
-                    Text("Update Status Sapi", fontWeight = FontWeight.Medium, fontSize = 13.sp)
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray,
+
+                            focusedLeadingIconColor = Color.Gray,
+                            unfocusedLeadingIconColor = Color.Gray,
+
+                            focusedTrailingIconColor = Color.Gray,
+                            unfocusedTrailingIconColor = Color.Gray,
+
+                            focusedBorderColor = Color(0xFF2E7D32),
+                            unfocusedBorderColor = Color.LightGray,
+
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+
+                            cursorColor = Color(0xFF2E7D32)
+                        )
+                    )
+
+                    Text(
+                        "Update Status Sapi",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp
+                    )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         listOf("Sehat", "Dalam Perawatan").forEach { status ->
                             FilterChip(selected = formState.statusSapi == status,
@@ -104,8 +160,12 @@ fun TindakLanjutScreen(
                                 label = { Text(status, fontSize = 12.sp) },
                                 colors = FilterChipDefaults.filterChipColors(
                                     selectedContainerColor = if (status == "Sehat") Color(0xFFE8F5E9) else Color(0xFFFFF3E0),
-                                    selectedLabelColor = if (status == "Sehat") Color(0xFF2E7D32) else Color(0xFFE65100)
-                                ))
+                                    selectedLabelColor = if (status == "Sehat") Color(0xFF2E7D32) else Color(0xFFE65100),
+
+                                    containerColor = Color.White,
+                                    labelColor = Color.Black
+                                )
+                            )
                         }
                     }
                 }
@@ -117,7 +177,16 @@ fun TindakLanjutScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32)),
                 shape = RoundedCornerShape(12.dp)) {
                 if (formState.isLoading) CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White, strokeWidth = 2.dp)
-                else { Icon(Icons.Default.Save, null); Spacer(Modifier.width(8.dp)); Text("Simpan & Selesaikan", fontWeight = FontWeight.SemiBold) }
+                else {
+                    Icon(Icons.Default.Save,
+                        null
+                    );
+                    Spacer(Modifier.width(8.dp)
+                    );
+                    Text(
+                        "Simpan & Selesaikan",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold) }
             }
             Spacer(Modifier.height(16.dp))
         }

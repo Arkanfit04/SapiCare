@@ -1,5 +1,6 @@
 package com.sapicare.app.data.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.sapicare.app.data.model.RiwayatKunjungan
@@ -21,7 +22,17 @@ class RiwayatRepository @Inject constructor(
         val listener = collection
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    Log.e(
+                        "Firestore",
+                        "Snapshot error",
+                        error
+                    )
+
+                    trySend(emptyList())
+
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(RiwayatKunjungan::class.java)?.copy(id = doc.id)
                 } ?: emptyList()
@@ -36,7 +47,17 @@ class RiwayatRepository @Inject constructor(
             .whereEqualTo("sapiId", sapiId)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) {
+                    Log.e(
+                        "Firestore",
+                        "Snapshot error",
+                        error
+                    )
+                    Log.e("RIWAYAT_FLOW", "Permission denied", error)
+                    trySend(emptyList())
+
+                    return@addSnapshotListener
+                }
                 val list = snapshot?.documents?.mapNotNull { doc ->
                     doc.toObject(RiwayatKunjungan::class.java)?.copy(id = doc.id)
                 } ?: emptyList()

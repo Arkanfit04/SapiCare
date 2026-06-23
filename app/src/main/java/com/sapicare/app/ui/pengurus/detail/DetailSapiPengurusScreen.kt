@@ -1,5 +1,6 @@
 package com.sapicare.app.ui.pengurus.detail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -244,13 +245,28 @@ fun DetailSapiPengurusScreen(
                         ) {
                             OutlinedButton(
                                 onClick = { showDeleteDialog = true },
-                                modifier = Modifier.weight(1f).height(50.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(50.dp),
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    containerColor = Color.White,
+                                    contentColor = Color(0xFFD32F2F)
+                                ),
+                                border = BorderStroke(1.dp, Color(0xFFD32F2F)),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = null,
+                                    tint = Color(0xFFD32F2F),
+                                    modifier = Modifier.size(18.dp)
+                                )
                                 Spacer(Modifier.width(6.dp))
-                                Text("Hapus", fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    text = "Hapus",
+                                    color = Color(0xFFD32F2F),
+                                    fontWeight = FontWeight.SemiBold
+                                )
                             }
                             Button(
                                 onClick = { onEdit(sapi.id) },
@@ -264,7 +280,9 @@ fun DetailSapiPengurusScreen(
                             ) {
                                 Icon(Icons.Default.Edit, null, modifier = Modifier.size(18.dp))
                                 Spacer(Modifier.width(6.dp))
-                                Text("Edit", fontWeight = FontWeight.SemiBold)
+                                Text("Edit",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }

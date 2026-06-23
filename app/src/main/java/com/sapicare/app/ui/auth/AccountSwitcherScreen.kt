@@ -36,13 +36,12 @@ fun AccountSwitcherScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Kelola Akun", fontWeight = FontWeight.Bold) },
+                title = { Text("Profile", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White)
                     }
                 },
-                windowInsets = WindowInsets(0),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF2E7D32),
                     titleContentColor = Color.White
@@ -78,29 +77,6 @@ fun AccountSwitcherScreen(
                     },
                     onRemove = { viewModel.removeAccount(account.uid) }
                 )
-            }
-
-            item {
-                Spacer(Modifier.height(8.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
-                    elevation = CardDefaults.cardElevation(0.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Icon(Icons.Default.Info, null, tint = Color(0xFF2E7D32), modifier = Modifier.size(18.dp))
-                        Text(
-                            "Untuk menambah akun dengan role berbeda, logout terlebih dahulu lalu login ulang dan pilih role yang diinginkan.",
-                            fontSize = 12.sp,
-                            color = Color(0xFF2E7D32)
-                        )
-                    }
-                }
             }
         }
     }

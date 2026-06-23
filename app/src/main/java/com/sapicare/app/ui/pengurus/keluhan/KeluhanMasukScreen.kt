@@ -55,10 +55,13 @@ fun KeluhanMasukScreen(
                         FilterChip(
                             selected = filterStatus == status,
                             onClick = { viewModel.setFilter(status) },
-                            label = { Text(label, fontSize = 11.sp) },
+                            label = { Text(label, fontSize = 9.sp) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = Color(0xFF2E7D32),
-                                selectedLabelColor = Color.White
+                                selectedLabelColor = Color.White,
+
+                                containerColor = Color.White,
+                                labelColor = Color.Black
                             )
                         )
                     }
@@ -104,8 +107,17 @@ fun KeluhanMasukCard(keluhan: Keluhan, onClick: () -> Unit) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(keluhan.namaSapi, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                    Text("dari ${keluhan.peternak} • ${keluhan.wilayah}", fontSize = 12.sp, color = Color.Gray)
+                    Text(
+                        keluhan.namaSapi,
+                        color = Color.Black,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 15.sp
+                    )
+                    Text(
+                        "dari ${keluhan.peternak} • ${keluhan.wilayah}",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
                 }
                 Surface(shape = RoundedCornerShape(20.dp), color = statusColor.copy(0.15f)) {
                     Text(keluhan.status.name.lowercase().replaceFirstChar { it.uppercase() },

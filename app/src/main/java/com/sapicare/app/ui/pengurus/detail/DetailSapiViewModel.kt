@@ -1,5 +1,6 @@
 package com.sapicare.app.ui.pengurus.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sapicare.app.data.model.Sapi
@@ -40,9 +41,24 @@ class DetailSapiViewModel @Inject constructor(
 
     fun deleteSapi() {
         val sapi = _uiState.value.sapi ?: return
+
         viewModelScope.launch {
-            repository.deleteSapi(sapi.id)
-            _uiState.value = _uiState.value.copy(isDeleted = true)
+            try {
+                repository.deleteSapi(sapi.id)
+
+                _uiState.value = _uiState.value.copy(
+                    isDeleted = true,
+                    error = null
+                )
+
+            } catch (e: Exception) {
+
+                Log.e("DELETE_SAPI", "Gagal menghapus sapi", e)
+
+                _uiState.value = _uiState.value.copy(
+                    error = "Gagal menghapus data sapi."
+                )
+            }
         }
     }
 }
