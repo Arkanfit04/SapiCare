@@ -13,5 +13,8 @@
 /captures
 .externalNativeBuild
 .cxx
+.kotlin/
+.idea/deviceManager.xml
 local.properties
 /app/google-services.json
+app/src/main/assets/sapicare-70ec1-firebase-adminsdk-fbsvc-b5323a933a.json
